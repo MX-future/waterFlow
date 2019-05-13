@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <style>
+    html,body{
+      padding: 0px;
+      margin: 0px;
+    }
+    .main{
+      width: 80%;
+      height: 500px;
+      margin: 0 auto;
+      display: flex;  /*弹性布局*/
+      flex-direction: row;  /*方向为水平，类似float: left*/
+      padding-left: 120px;
+    }
+    .box{
+      flex: 1;  /*每个box的占比，如果只有一个box就为1，两个为二分之一，三个为三分之一，依此类推*/
+      text-align: center;
+    }
+    .box img{
+      width: 285px;
+      height: auto;
+      border: 2px solid beige;
+      padding: 3px;
+      margin-bottom: 5px;
+    }
+    .box img:hover{
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+  </style>
+  <body>
+    <div class="main">
+      <div class="box" id="box-1">
+        <img src="images/1.png">
+      </div>
+      <div class="box" id="box-2">
+        <img src="images/2.png">
+      </div>
+      <div class="box" id="box-3">
+        <img src="images/3.png">
+      </div>
+      <div class="box" id="box-4">
+        <img src="images/4.png">
+      </div>
+      <div class="box" id="box-5">
+        <img src="images/5.png">
+      </div>
+    </div>
+  </body>
+  <script>
+    //屏幕默认大小，初始化图片的占用位置
+    var windowHeight = window.screen.height+500;
+
+    window.onload = function(){
+      insertImg();
+      //监听滚动事件
+      window.document.addEventListener('scroll',function(){
+        //document.documentElement.scrollTop  已经滚动的内容高度
+        //window.screen.height  //窗口高度
+        //document.documentElement.scrollHeight  //能滚动的最大高度
+        if(document.documentElement.scrollTop+window.screen.height > document.documentElement.scrollHeight){
+          //再次插入图片
+          windowHeight+=500;
+          insertImg();
+        }
+      });
+    }
+
+
+    function insertImg(){
+      //设置一个定时器来插入图片
+      var inter = setInterval(function(){
+        //达到预期高度，停止插入图片
+        if(document.documentElement.scrollHeight>windowHeight){
+          clearInterval(inter);
+        }
+        //创建img节点
+        var img = document.createElement('img');
+        //生成一个1到9的随机整数，从而插入不同图片
+        var num = Math.floor(Math.random()*9+1);
+        img.setAttribute('src',"images/"+num+".png");
+        //放图
+        minDiv().appendChild(img);
+      },50);
+    }
+
+    //计算最小高度那一列所在的div
+    function minDiv(){
+      //获取box容器
+      var box_1 = document.getElementById('box-1');
+      var box_2 = document.getElementById('box-2');
+      var box_3 = document.getElementById('box-3');
+      var box_4 = document.getElementById('box-4');
+      var box_5 = document.getElementById('box-5');
+
+      //获取box容器下面所有的img
+      var img_1 = box_1.children;
+      var img_2 = box_2.children;
+      var img_3 = box_3.children;
+      var img_4 = box_4.children;
+      var img_5 = box_5.children;
+
+      //每列的高度
+      var Height1 = Height(img_1);
+      var Height2 = Height(img_2);
+      var Height3 = Height(img_3);
+      var Height4 = Height(img_4);
+      var Height5 = Height(img_5);
+
+      //计算最小的高度列
+      var minHeight = Math.min(Height1,Height2,Height3,Height4,Height5);
+        switch (minHeight) {
+          case Height1:
+            return box_1;
+          case Height2:
+            return box_2;
+          case Height3:
+            return box_3;
+          case Height4:
+            return box_4;
+          case Height5:
+            return box_5;
+        }
+    }
+
+    //获取每列高度
+    function Height(Img){
+      if(Img == null || Img.length == 0){
+        console.log("还没有图片...");
+        return 0
+      }else{
+        //总的高度值
+        var height = 0;
+        for(var i = 0;i < Img.length;i++){
+          height += Img[i].height;
+        }
+        return height;
+      }
+    }
+
+  </script>
+</html>
